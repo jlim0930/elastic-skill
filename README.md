@@ -17,10 +17,14 @@ We provide a universal setup script that automatically configures your environme
 
 ## Supported LLM Environments
 
-### 1. Cursor IDE (Zero-Config)
-After running `./setup.sh`, a `.cursor/rules` directory is generated automatically. 
-*   **Usage**: Open this folder in Cursor. In Cursor Chat (Cmd/Ctrl + L), you can now explicitly call the personas via `@` mentions.
-*   **Example**: `@elastic-log-analyzer Read the logs in /tmp/es.log and find the root cause.`
+### 1. Cursor IDE (Global Helper Command)
+Cursor requires `.mdc` rules to be in the local workspace. `setup.sh` installs a global helper command so you can instantly enable these rules in *any* project folder without cluttering your system.
+*   **Usage**: Navigate to any directory you want to troubleshoot in your terminal and run:
+    ```bash
+    elastic-cursor-init
+    ```
+*   **Result**: This creates a `.cursor/rules` folder and symlinks the personas. You can now use `@` mentions like `@elastic-log-analyzer` in Cursor Chat (Cmd/Ctrl + L).
+*   *(Note: Ensure `~/.local/bin` is in your system `$PATH`)*
 
 ### 2. Gemini CLI (Native Support)
 The `setup.sh` script installs the agents, skills, and utility scripts globally into `~/.gemini/`. 
