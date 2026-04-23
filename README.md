@@ -17,6 +17,8 @@ We provide a universal setup script that automatically configures your environme
 
 ## Documentation MCP Server
 
+> ⚠️ **Warning**: The MCP server's database size can become quite large, and the initial crawl of the listed documentation sites can take a significant amount of time depending on the volume of content.
+
 This project uses the [mcp-server](https://github.com/jlim0930/mcp-server) to allow your AI to crawl, index, and search across Elastic documentation, GitHub repositories, and API references in real-time.
 
 ### ✨ Automated Setup (Recommended)
