@@ -54,16 +54,12 @@ if command -v docker >/dev/null 2>&1; then
         cd mcp-server && git pull && cd ..
     fi
     
-    cd mcp-server
-    echo "   Configuring Elastic documentation sites..."
-    # Update DOC_SITES to Elastic specific URLs
-    sed -i.bak 's|DOC_SITES=.*|DOC_SITES=https://www.elastic.co/docs,https://www.elastic.co/docs/api,https://github.com/elastic|' docker-compose.yml
+    echo "   Configuring Elastic documentation sites from mcp-docs.env..."
+    cp mcp-docs.env mcp-server/.env
     
-    # Add AUTO_INDEX if it doesn't exist
-    if ! grep -q "AUTO_INDEX=" docker-compose.yml; then
-        sed -i.bak '/DOC_SITES=/a\
-      - AUTO_INDEX=true' docker-compose.yml
-    fi
+    cd mcp-server
+    # Update docker-compose.yml to read DOC_SITES from the .env file
+    sed -i.bak 's|- DOC_SITES=.*|- DOC_SITES=${DOC_SITES}|' docker-compose.yml
 
     echo "   Building and starting MCP server on port 8888..."
     docker compose up -d --build
