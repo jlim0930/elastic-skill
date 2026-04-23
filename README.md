@@ -19,10 +19,15 @@ We provide a universal setup script that automatically configures your environme
 
 This project uses the [mcp-server](https://github.com/jlim0930/mcp-server) to allow your AI to crawl, index, and search across Elastic documentation, GitHub repositories, and API references in real-time.
 
-### 🐳 Starting the Server
-The setup script will automatically clone the external repository and configure it using the `mcp-docs.env` file. 
+### ✨ Automated Setup (Recommended)
+If you ran `./setup.sh` in the Quick Start phase, **you are already done!** The script automatically:
+1. Clones the `mcp-server` repository.
+2. Injects the target URLs from `mcp-docs.env`.
+3. Builds and starts the Docker container on port `8888`.
+4. Bootstraps **Gemini CLI** and **Claude Desktop** by registering the MCP server in their respective configuration files.
 
-To start it manually:
+### 🐳 Manual Server Startup
+If you prefer not to use the setup script, you can start the server manually:
 ```bash
 git clone https://github.com/jlim0930/mcp-server.git
 cp mcp-docs.env mcp-server/.env
@@ -33,9 +38,8 @@ docker compose up -d --build
 *   **Default Port**: `8888`
 *   **Configured Sites**: Controlled via the `DOC_SITES` variable inside the `mcp-docs.env` file. (Auto-indexing is triggered automatically on startup when sites are configured).
 
-### 🔌 Bootstrapping your LLM
-
-You can connect to the MCP server via **SSE** (Recommended, uses the persistent server on port 8888) or **stdio** (Runs a temporary container for each session).
+### 🔌 Manual LLM Bootstrapping
+If you are using an environment that wasn't automatically configured (like **Cursor IDE**), or want to set it up manually:
 
 #### 1. Gemini CLI
 Add to your `~/.gemini/config.yaml`:
