@@ -17,19 +17,20 @@ We provide a universal setup script that automatically configures your environme
 
 ## Documentation MCP Server
 
-> ⚠️ **Warning**: The MCP server's database size can become quite large, and the initial crawl of the listed documentation sites can take a significant amount of time depending on the volume of content.
+> ⚡ **Performance Optimization**: The setup process now includes an automated patch that enables the MCP server to pre-load documentation from the [Elastic LLM Documentation Zip](https://www.elastic.co/docs/llm.zip). This instantly indexes over 14,000 pages of documentation into the vector database, bypassing the need for an initial lengthy web crawl.
 
 This project uses the [mcp-server](https://github.com/jlim0930/mcp-server) to allow your AI to crawl, index, and search across Elastic documentation, GitHub repositories, and API references in real-time.
 
 ### ✨ Automated Setup (Recommended)
 If you ran `./setup.sh` in the Quick Start phase, **you are already done!** The script automatically:
 1. Clones the `mcp-server` repository.
-2. Injects the target URLs from `mcp-docs.env`.
-3. Builds and starts the Docker container on port `8888`.
-4. Bootstraps **Gemini CLI** and **Claude Desktop** by registering the MCP server in their respective configuration files.
+2. **Patches the server** to utilize the high-speed `llm.zip` indexing logic.
+3. Injects the target URLs from `mcp-docs.env`.
+4. Builds and starts the Docker container on port `8888`.
+5. Bootstraps **Gemini CLI** and **Claude Desktop** by registering the MCP server in their respective configuration files.
 
 ### 🐳 Manual Server Startup
-If you prefer not to use the setup script, you can start the server manually:
+If you prefer not to use the setup script, you can start the server manually (note that manual startup will skip the `llm.zip` optimization patch):
 ```bash
 git clone https://github.com/jlim0930/mcp-server.git
 cp mcp-docs.env mcp-server/.env
