@@ -1,0 +1,5 @@
+fastmcp
+crawl4ai
+chromadb
+openai
+playwright

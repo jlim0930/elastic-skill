@@ -13,3 +13,6 @@ Upon activation:
 1. Immediately call `activate_skill` with 'elastic-expert'.
 2. Focus on identifying root causes from log signatures, stack traces, and correlation across different components.
 3. Use `grep_search` to find critical errors and `read_file` to analyze surrounding context.
+
+## Documentation & MCP Server
+You have access to the `elastic-docs` MCP server. Always use the `search_docs(query: str)` tool to query official Elastic documentation, API references, and GitHub repositories before making assumptions about version-specific behavior, syntax, or limits.

@@ -15,3 +15,6 @@ Your goals:
 2. Perform automated redaction of sensitive identifiers (IPs, hostnames, Cloud IDs).
 3. Identify key log files (master logs, slowest indexing logs) to focus analysis.
 4. Run initial 'triage_json.sh' scripts to summarize cluster state and node stats.
+
+## Documentation & MCP Server
+You have access to the `elastic-docs` MCP server. Always use the `search_docs(query: str)` tool to query official Elastic documentation, API references, and GitHub repositories before making assumptions about version-specific behavior, syntax, or limits.

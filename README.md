@@ -1,12 +1,12 @@
 # Elastic Stack AI Troubleshooting Ecosystem
 
-This repository contains a specialized ecosystem of AI Agent Skills, Subagents, and Utility Scripts designed to troubleshoot, analyze, and optimize the Elastic Stack across all deployment models (Self-managed, Elastic Cloud Hosted, Elastic Cloud Enterprise, and Elastic Cloud on Kubernetes).
+This repository contains a specialized ecosystem of AI Agent Skills, Subagents, Utility Scripts, and a **Documentation MCP Server** designed to troubleshoot, analyze, and optimize the Elastic Stack across all deployment models.
 
-It is structured to act as a **Strategic Orchestrator**, breaking down complex observability, performance, and infrastructure issues into delegable tasks for specialized AI personas.
+It is structured to act as a **Strategic Orchestrator**, breaking down complex observability, performance, and infrastructure issues into delegable tasks for specialized AI personas, while providing deep RAG-based access to the latest Elastic documentation.
 
 ## 🚀 Quick Start (Automated Setup)
 
-We provide a universal setup script that automatically configures your environment for Gemini CLI and Cursor IDE, and makes all utility scripts executable.
+We provide a universal setup script that automatically configures your environment, builds the MCP server, makes all utility scripts executable, and auto-registers the MCP server with Gemini CLI and Claude Desktop.
 
 ```bash
 # Run the setup script from the project root
@@ -15,30 +15,93 @@ We provide a universal setup script that automatically configures your environme
 
 ---
 
+## Documentation MCP Server
+
+The included `mcp-docs-server` allows your AI to crawl, index, and search across Elastic documentation, GitHub repositories, and API references in real-time.
+
+### 🐳 Starting the Server
+The server runs in a Docker container for ease of use:
+```bash
+cd mcp-docs-server
+docker-compose up -d
+```
+*   **Default Port**: `8888`
+*   **Configured Sites**: Controlled via `DOC_SITES` in `docker-compose.yml`.
+
+### 🔌 Bootstrapping your LLM
+
+You can connect to the MCP server via **SSE** (Recommended, uses the persistent server on port 8888) or **stdio** (Runs a temporary container for each session).
+
+#### 1. Gemini CLI
+Add to your `~/.gemini/config.yaml`:
+
+**Option A: SSE (Recommended)**
+```yaml
+mcpServers:
+  elastic-docs:
+    url: http://localhost:8888/sse
+```
+
+**Option B: stdio**
+```yaml
+mcpServers:
+  elastic-docs:
+    command: docker
+    args: ["run", "-i", "--rm", "elastic-mcp-docs"]
+```
+
+#### 2. Claude Desktop
+Add to your `claude_desktop_config.json`:
+
+**Option A: SSE (Recommended)**
+```json
+{
+  "mcpServers": {
+    "elastic-docs": {
+      "url": "http://localhost:8888/sse"
+    }
+  }
+}
+```
+
+**Option B: stdio**
+```json
+{
+  "mcpServers": {
+    "elastic-docs": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "elastic-mcp-docs"]
+    }
+  }
+}
+```
+
+#### 3. Cursor IDE
+1. Open **Cursor Settings** -> **Features** -> **MCP**.
+2. Click **+ Add New MCP Server**.
+3. **Name**: `elastic-docs`
+4. **Type**: Select **SSE** (Recommended) or **command**.
+5. **URL (SSE)**: `http://localhost:8888/sse`
+6. **Command (command)**: `docker run -i --rm elastic-mcp-docs`
+
+---
+
 ## Supported LLM Environments
 
 ### 1. Cursor IDE (Global Helper Command)
-Cursor requires `.mdc` rules to be in the local workspace. `setup.sh` installs a global helper command so you can instantly enable these rules in *any* project folder without cluttering your system.
+Cursor requires `.mdc` rules to be in the local workspace. `setup.sh` installs a global helper command so you can instantly enable these rules in *any* project folder.
 *   **Usage**: Navigate to any directory you want to troubleshoot in your terminal and run:
     ```bash
     elastic-cursor-init
     ```
-*   **Result**: This creates a `.cursor/rules` folder and symlinks the personas. You can now use `@` mentions like `@elastic-log-analyzer` in Cursor Chat (Cmd/Ctrl + L).
-*   *(Note: Ensure `~/.local/bin` is in your system `$PATH`)*
+*   **Result**: This creates a `.cursor/rules` folder and symlinks the personas. Use `@` mentions like `@elastic-log-analyzer` in Cursor Chat.
 
 ### 2. Gemini CLI (Native Support)
-The `setup.sh` script installs the agents, skills, and utility scripts globally into `~/.gemini/`. 
-*   **Usage**: Start a session and explicitly call an agent or let the CLI route your request automatically based on the symptoms provided.
-*   **Example**: `gemini "@eck-expert analyze this diagnostic bundle and tell me why pods are crashing"`
+The `setup.sh` script installs agents, skills, and utility scripts globally into `~/.gemini/`. 
+*   **Usage**: Start a session and explicitly call an agent or let the CLI route your request automatically.
 
-### 3. Web LLMs (ChatGPT Custom GPTs / Claude Projects)
-If you are using web interfaces, you can easily load this project into a persistent context.
-*   **Usage**: Open the `BOOTSTRAP.md` file and follow the instructions to copy the Master Prompt and upload the reference files into your Custom GPT or Claude Project.
-
-### 4. Claude CLI / Aider
-CLI tools like Claude CLI or Aider primarily rely on System Prompts and context files.
-*   **Usage**: Pass the relevant Agent definition or Skill file as a system prompt when you run the tool.
-*   **Example (Aider)**: `aider --message-file agents/elastic-upgrade-specialist.md`
+### 3. Web LLMs (ChatGPT / Claude.ai)
+Open the `BOOTSTRAP.md` file and follow instructions to upload reference files into your Custom GPT or Claude Project.
 
 ---
 
@@ -46,15 +109,11 @@ CLI tools like Claude CLI or Aider primarily rely on System Prompts and context 
 
 ```text
 .
-├── setup.sh         # Auto-installer for Cursor & Gemini CLI
-├── BOOTSTRAP.md     # Master prompt for ChatGPT/Claude.ai
-├── skills/          # Deep contextual rulebooks for specific platforms
-│   ├── cloud-expert/  # Elastic Cloud Hosted (ECH)
-│   ├── ece-expert/    # Elastic Cloud Enterprise (ECE)
-│   ├── eck-expert/    # Elastic Cloud on Kubernetes (ECK)
-│   └── elastic-expert/# General Stack & Self-Managed
-├── agents/          # Specialized subagent definitions (.md files)
-└── scripts/         # Bash scripts for fast parsing of diagnostic JSONs/logs
+├── setup.sh            # Auto-installer for Cursor & Gemini CLI
+├── mcp-docs-server/    # Dockerized MCP server for documentation RAG
+├── skills/             # Deep contextual rulebooks for specific platforms
+├── agents/             # Specialized subagent definitions (.md files)
+└── scripts/            # Bash scripts for fast parsing of diagnostic JSONs/logs
 ```
 
 ## Included Utility Scripts

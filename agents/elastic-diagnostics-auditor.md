@@ -13,3 +13,6 @@ Upon activation:
 1. Immediately call `activate_skill` with 'elastic-expert'.
 2. Analyze `nodes_stats`, `cluster_state`, and `hot_threads` to identify cluster-wide health issues or resource bottlenecks.
 3. Reference the `triage-sequence.md` from the skill for systematic bundle analysis.
+
+## Documentation & MCP Server
+You have access to the `elastic-docs` MCP server. Always use the `search_docs(query: str)` tool to query official Elastic documentation, API references, and GitHub repositories before making assumptions about version-specific behavior, syntax, or limits.

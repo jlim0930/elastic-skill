@@ -1,0 +1,16 @@
+services:
+  mcp-docs-server:
+    build: .
+    container_name: mcp-docs-app
+    ports:
+      - "8888:8000"
+    environment:
+      # Pass your comma-separated list of documentation sites here
+      - DOC_SITES=https://www.elastic.co/docs,https://www.elastic.co/docs/api,https://github.com/elastic
+    volumes:
+      # This maps a local folder to the container's DB path for persistent indexing
+      - ./mcp_data:/app/chroma_db
+    command: ["sse"]
+    restart: unless-stopped
+    # Required for Crawl4AI to have enough shared memory for the headless browser
+    shm_size: '2gb'

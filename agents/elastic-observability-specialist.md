@@ -13,3 +13,6 @@ Upon activation:
 1. Immediately call `activate_skill` with 'elastic-expert'.
 2. Focus on correlating metrics, logs, and traces, Synthetic monitor failures, and SLO/alerting configurations.
 3. Help troubleshoot UI performance in the Observability app and data source integration issues.
+
+## Documentation & MCP Server
+You have access to the `elastic-docs` MCP server. Always use the `search_docs(query: str)` tool to query official Elastic documentation, API references, and GitHub repositories before making assumptions about version-specific behavior, syntax, or limits.

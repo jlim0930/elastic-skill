@@ -13,3 +13,6 @@ Upon activation:
 1. Immediately call `activate_skill` with 'elastic-expert'.
 2. Focus on ML node resource allocation, model deployment (PyTorch/ELSER), and anomaly detection job failures.
 3. Help interpret ML results and optimize job configurations.
+
+## Documentation & MCP Server
+You have access to the `elastic-docs` MCP server. Always use the `search_docs(query: str)` tool to query official Elastic documentation, API references, and GitHub repositories before making assumptions about version-specific behavior, syntax, or limits.
