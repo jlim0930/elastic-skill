@@ -48,7 +48,7 @@ echo "   ✅ Gemini CLI environment updated."
 echo "🐳 Setting up MCP Docs Server..."
 if command -v docker >/dev/null 2>&1; then
     if [ -d "mcp-docs-server" ]; then
-        echo "   Building and starting MCP server on port 8888..."
+        echo "   Building and starting MCP server from external repo on port 8888..."
         cd mcp-docs-server
         docker compose up -d --build
         cd ..

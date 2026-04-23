@@ -17,16 +17,17 @@ We provide a universal setup script that automatically configures your environme
 
 ## Documentation MCP Server
 
-The included `mcp-docs-server` allows your AI to crawl, index, and search across Elastic documentation, GitHub repositories, and API references in real-time.
+This project uses the [mcp-server](https://github.com/jlim0930/mcp-server) to allow your AI to crawl, index, and search across Elastic documentation, GitHub repositories, and API references in real-time.
 
 ### 🐳 Starting the Server
-The server runs in a Docker container for ease of use:
+The server runs in a Docker container and pulls the latest source from the external repository:
 ```bash
 cd mcp-docs-server
 docker-compose up -d
 ```
 *   **Default Port**: `8888`
-*   **Configured Sites**: Controlled via `DOC_SITES` in `docker-compose.yml`.
+*   **Configured Sites**: Controlled via `DOC_SITES` in `mcp-docs-server/docker-compose.yml`.
+*   **Auto-Indexing**: Enabled by default for all configured `DOC_SITES`.
 
 ### 🔌 Bootstrapping your LLM
 
@@ -110,7 +111,7 @@ Open the `BOOTSTRAP.md` file and follow instructions to upload reference files i
 ```text
 .
 ├── setup.sh            # Auto-installer for Cursor & Gemini CLI
-├── mcp-docs-server/    # Dockerized MCP server for documentation RAG
+├── mcp-docs-server/    # Docker configuration for Documentation RAG (External)
 ├── skills/             # Deep contextual rulebooks for specific platforms
 ├── agents/             # Specialized subagent definitions (.md files)
 └── scripts/            # Bash scripts for fast parsing of diagnostic JSONs/logs
