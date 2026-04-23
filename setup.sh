@@ -47,13 +47,28 @@ echo "   ✅ Gemini CLI environment updated."
 # 4. Setup MCP Docs Server (Docker)
 echo "🐳 Setting up MCP Docs Server..."
 if command -v docker >/dev/null 2>&1; then
-    if [ -d "mcp-docs-server" ]; then
-        echo "   Building and starting MCP server from external repo on port 8888..."
-        cd mcp-docs-server
-        docker compose up -d --build
-        cd ..
-        echo "   ✅ MCP Docs Server is running on http://localhost:8888"
+    echo "   Cloning MCP server from external repo..."
+    if [ ! -d "mcp-server" ]; then
+        git clone https://github.com/jlim0930/mcp-server.git
+    else
+        cd mcp-server && git pull && cd ..
     fi
+    
+    cd mcp-server
+    echo "   Configuring Elastic documentation sites..."
+    # Update DOC_SITES to Elastic specific URLs
+    sed -i.bak 's|DOC_SITES=.*|DOC_SITES=https://www.elastic.co/docs,https://www.elastic.co/docs/api,https://github.com/elastic|' docker-compose.yml
+    
+    # Add AUTO_INDEX if it doesn't exist
+    if ! grep -q "AUTO_INDEX=" docker-compose.yml; then
+        sed -i.bak '/DOC_SITES=/a\
+      - AUTO_INDEX=true' docker-compose.yml
+    fi
+
+    echo "   Building and starting MCP server on port 8888..."
+    docker compose up -d --build
+    cd ..
+    echo "   ✅ MCP Docs Server is running on http://localhost:8888"
 else
     echo "   ⚠️  Docker not found. Skipping MCP server setup."
     echo "   (Install Docker to use the documentation indexing server)"
