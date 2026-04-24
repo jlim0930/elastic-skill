@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Example helper script for cloud-expert
+ * Example helper script for ech-expert
  *
  * This is a placeholder script that can be executed directly.
  * Replace with actual implementation or delete if not needed.
