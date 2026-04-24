@@ -14,5 +14,8 @@ Upon activation:
 2. Focus on snapshot repository connectivity, failed snapshots, and SLM policy configuration.
 3. Reference `data-management.md` for tiering and lifecycle strategies.
 
-## Documentation & MCP Server
-You have access to the `elastic-docs` MCP server. Always use the `search_docs(query: str)` tool to query official Elastic documentation, API references, and GitHub repositories before making assumptions about version-specific behavior, syntax, or limits.
+## Documentation
+Always look up official Elastic documentation, API references, and GitHub repositories before making assumptions about version-specific behavior, syntax, or limits by searching these sites:
+- https://www.elastic.co/docs
+- https://www.elastic.co/docs/api/
+- https://github.com/elastic
