@@ -54,3 +54,8 @@ The `scripts/` directory contains bash scripts designed for LLMs to run via shel
 *   **`triage_tasks.sh`**: Parses `_tasks?detailed=true` JSON to find the longest-running tasks and summarize task counts by action.
 *   **`triage_hot_threads.sh`**: Condenses verbose `_nodes/hot_threads` output to show only thread names, CPU percentages, and the top-level blocking Java methods.
 *   **`triage_memory.sh`**: Analyzes `_nodes/stats` to instantly surface nodes with high JVM heap pressure (>75%), GC issues, and tripped circuit breakers.
+*   **`triage_circuit_breakers.sh`**: Deep dive into circuit breaker states, identifying both tripped breakers and those nearing their limits.
+*   **`triage_sharding.sh`**: Analyzes shard sizes and distribution to identify oversized shards (>50GB) and shard count imbalances.
+*   **`triage_pipelines.sh`**: Identifies failing ingest processors by aggregating error counts across all nodes.
+*   **`triage_ilm.sh`**: Summarizes the status and configuration of Index Lifecycle Management (ILM) policies.
+*   **`triage_summary.sh`**: Provides a high-level "at a glance" cluster health overview from various diagnostic files.
