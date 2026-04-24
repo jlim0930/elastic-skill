@@ -15,26 +15,7 @@ We provide a universal setup script that automatically configures your environme
 
 ---
 
-## Supported LLM Environments
-
-### 1. Cursor IDE (Global Helper Command)
-Cursor requires `.mdc` rules to be in the local workspace. `setup.sh` installs a global helper command so you can instantly enable these rules in *any* project folder.
-*   **Usage**: Navigate to any directory you want to troubleshoot in your terminal and run:
-    ```bash
-    elastic-cursor-init
-    ```
-*   **Result**: This creates a `.cursor/rules` folder and symlinks the personas. Use `@` mentions like `@elastic-log-analyzer` in Cursor Chat.
-
-### 2. Gemini CLI (Native Support)
-The `setup.sh` script installs agents, skills, and utility scripts globally into `~/.gemini/`. 
-*   **Usage**: Start a session and explicitly call an agent or let the CLI route your request automatically.
-
-### 3. Web LLMs (ChatGPT / Claude.ai)
-Open the `BOOTSTRAP.md` file and follow instructions to upload reference files into your Custom GPT or Claude Project.
-
----
-
-## 🛠️ CLI Installation
+## 🛠️ Requirements & CLI Installation
 
 Most tools require **Node.js 18+**. Install via `brew install node` (macOS) or `sudo apt install nodejs` (WSL).
 
@@ -51,6 +32,33 @@ Most tools require **Node.js 18+**. Install via `brew install node` (macOS) or `
     *   **macOS**: Command Palette (`Cmd+Shift+P`) -> "Shell Command: Install 'cursor' command in PATH"
     *   **WSL**: Run `cursor .` in your terminal to link your Windows installation.
 *   **AI Agent (`cursor-agent`)**: `curl https://cursor.com/install -fsS | bash`
+
+---
+
+## Supported LLM Environments
+
+### 1. Gemini CLI (Native Support)
+The `setup.sh` script installs agents, skills, and utility scripts globally into `~/.gemini/`. 
+
+*   **Usage**: Start a session and explicitly call an agent or let the CLI route your request automatically.
+*   **Example Troubleshooting Flow**:
+    1. Create a directory for your case: `mkdir -p diagnostics/issue-123 && cd diagnostics/issue-123`
+    2. Copy relevant logs, JSON diagnostics, or screenshots into this folder.
+    3. Run `gemini` in this directory.
+    4. Ask: *"Analyze these logs and tell me why the cluster is red."*
+    5. The CLI will automatically use the `elastic-expert` skill and specialized subagents to triage the files.
+
+### 2. Cursor IDE (Global Helper Command)
+Cursor requires `.mdc` rules to be in the local workspace. `setup.sh` installs a global helper command so you can instantly enable these rules in *any* project folder.
+
+*   **Usage**: Navigate to your troubleshooting directory and run:
+    ```bash
+    elastic-cursor-init
+    ```
+*   **Result**: This creates a `.cursor/rules` folder and symlinks the personas. Use `@` mentions like `@elastic-log-analyzer` in Cursor Chat to trigger specialized analysis on your local files.
+
+### 3. Web LLMs (ChatGPT / Claude.ai)
+Open the `BOOTSTRAP.md` file and follow instructions to upload reference files into your Custom GPT or Claude Project.
 
 ---
 
