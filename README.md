@@ -34,6 +34,26 @@ Open the `BOOTSTRAP.md` file and follow instructions to upload reference files i
 
 ---
 
+## 🛠️ CLI Installation
+
+Most tools require **Node.js 18+**. Install via `brew install node` (macOS) or `sudo apt install nodejs` (WSL).
+
+### 1. Gemini CLI (`gemini`)
+*   **macOS (Homebrew)**: `brew install gemini-cli`
+*   **macOS/WSL (npm)**: `npm install -g @google/gemini-cli`
+
+### 2. Claude CLI (`claude`)
+*   **macOS/WSL (Native)**: `curl -fsSL https://claude.ai/install.sh | bash`
+*   **macOS/WSL (npm)**: `npm install -g @anthropic-ai/claude-code`
+
+### 3. Cursor CLI (`cursor`)
+*   **Editor Command**: 
+    *   **macOS**: Command Palette (`Cmd+Shift+P`) -> "Shell Command: Install 'cursor' command in PATH"
+    *   **WSL**: Run `cursor .` in your terminal to link your Windows installation.
+*   **AI Agent (`cursor-agent`)**: `curl https://cursor.com/install -fsS | bash`
+
+---
+
 ## Repository Structure
 
 ```text
