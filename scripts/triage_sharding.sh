@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_sharding.sh - Analyze shard sizes and distribution
 # Expects: shards.json (from _cat/shards?v&h=index,shard,prirep,state,node,store,ip&format=json)
 FILE=$1

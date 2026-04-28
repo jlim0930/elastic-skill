@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_circuit_breakers.sh - Analyze circuit breaker states
 # Expects: nodes_stats.json (from _nodes/stats)
 FILE=$1

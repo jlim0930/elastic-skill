@@ -50,3 +50,4 @@ echo "👉 Cursor IDE users: Run 'elastic-cursor-init' in any project folder to 
 echo "   (Make sure ~/.local/bin is in your system's PATH)"
 echo "👉 Gemini CLI users: Agents and skills are installed globally."
 echo "👉 Web LLM users: Check out BOOTSTRAP.md for Claude/ChatGPT setup."
+echo "👉 Official Skills: Extend this ecosystem with https://github.com/elastic/agent-skills"

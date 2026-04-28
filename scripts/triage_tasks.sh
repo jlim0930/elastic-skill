@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_tasks.sh - Analyzes Elasticsearch _tasks JSON to find long-running tasks
 FILE=$1
 

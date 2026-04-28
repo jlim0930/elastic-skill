@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_memory.sh - Extracts JVM heap usage and circuit breaker states from _nodes/stats
 FILE=$1
 

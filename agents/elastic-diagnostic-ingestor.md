@@ -24,3 +24,4 @@ Always look up official Elastic documentation, API references, and GitHub reposi
 - https://www.elastic.co/docs
 - https://www.elastic.co/docs/api/
 - https://github.com/elastic
+- https://github.com/elastic/agent-skills

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_ilm.sh - Summarize ILM status and policies
 # Expects: ilm_status.json and ilm_policies.json
 STATUS_FILE=$1

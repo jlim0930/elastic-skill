@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_allocation.sh - Summarize shard allocation status and common reasons
 FILE=$1 # Expecting a JSON file with _cat/shards or _cluster/allocation/explain output
 

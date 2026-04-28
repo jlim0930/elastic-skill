@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_hot_threads.sh - Condenses verbose Elasticsearch hot_threads output
 FILE=$1
 

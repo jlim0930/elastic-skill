@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_summary.sh - High-level cluster overview
 # Expects a directory containing standard diagnostic JSON files
 

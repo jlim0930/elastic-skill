@@ -4,6 +4,15 @@ This repository contains a specialized ecosystem of AI Agent Skills, Subagents, 
 
 It is structured to act as a **Strategic Orchestrator**, breaking down complex observability, performance, and infrastructure issues into delegable tasks for specialized AI personas.
 
+## 🤝 Official Elastic Agent Skills
+
+This ecosystem is designed to work in tandem with the official [Elastic Agent Skills](https://github.com/elastic/agent-skills) library. You can leverage skills and scripts from that repository to extend your troubleshooting capabilities.
+
+*   **Repository**: `https://github.com/elastic/agent-skills`
+*   **Usage**: Refer to the official repository for deep querying (ES|QL), cloud setup, and advanced security alert triage.
+
+---
+
 ## 🚀 Quick Start (Automated Setup)
 
 We provide a universal setup script that automatically configures your environment and makes all utility scripts executable.

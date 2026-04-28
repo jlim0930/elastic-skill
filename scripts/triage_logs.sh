@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_logs.sh - Quick log analysis for error distribution
 FILE=$1
 SEARCH_TERM=${2:-"ERROR|WARN|Exception"}

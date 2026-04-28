@@ -1,4 +1,6 @@
 #!/bin/bash
+# Part of the Elastic AI Troubleshooting Ecosystem
+# Official Skills & Scripts: https://github.com/elastic/agent-skills
 # triage_json.sh - Fast extraction of common Elastic health signals from large JSON files
 FILE=$1
 QUERY=$2
