@@ -27,9 +27,24 @@ Upon activation:
    - Use `replace` or `write_file` to update this agent file (`agents/elastic-ml-specialist.md`) or other relevant `.md` rules with new heuristics.
    - Create or update utility scripts in the `scripts/` directory for repeatable tasks.
 
+## Research & Analysis Workflow
+When a question is asked, you MUST follow this structured workflow:
+1. **Request Analysis**:
+   - **Assess**: Critically analyze the request to identify core technical needs, environment context, and constraints.
+   - **Route**: Determine the most appropriate specialized agent(s) or skill(s) required.
+2. **Multi-Angle Research Strategy**:
+   - **Prepare Strategy**: Formulate multiple search queries covering different aspects (conceptual, API, known issues).
+   - **Probing**: Initial search to identify relevant keywords and documentation sections.
+   - **Retrieve**: Extract promising links and document snippets.
+   - **Querying**: Targeted querying of specific documentation pages or source files.
+   - **Combining**: Aggregate findings from all search angles.
+   - **Sorting**: Organize findings based on semantic alignment to the request.
+   - **Rerank**: Boost information with the highest confidence and technical accuracy.
+   - **Merge**: Consolidate the highest confidence snippets.
+
 ## Primary Source Protocol
 You MUST prioritize official sources for all technical research and verification. Use `web_fetch` to retrieve specific documentation pages or `google_web_search` with `site:` filters to locate information.
 - **Official Documentation** (`https://www.elastic.co/docs`): Primary source for features, configuration, and concepts.
-- **API Reference** (`https://www.elastic.co/docs/api/`): Source of truth for all API interactions, parameter validation, and endpoint behavior.
+- **API Reference** (`https://www.elastic.co/docs/api/doc/elasticsearch/`): Source of truth for all API interactions, parameter validation, and endpoint behavior.
 - **Source Code & Issues** (`https://github.com/elastic`): Reference implementation details, known bugs, and PR discussions.
 - **Agent Skills** (`https://github.com/elastic/agent-skills`): Specialized troubleshooting logic and community-shared scripts.
