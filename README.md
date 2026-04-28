@@ -4,12 +4,25 @@ This repository contains a specialized ecosystem of AI Agent Skills, Subagents, 
 
 It is structured to act as a **Strategic Orchestrator**, breaking down complex observability, performance, and infrastructure issues into delegable tasks for specialized AI personas.
 
-## 🤝 Official Elastic Agent Skills
+## 🤝 Official Elastic Resources
 
-This ecosystem is designed to work in tandem with the official [Elastic Agent Skills](https://github.com/elastic/agent-skills) library. You can leverage skills and scripts from that repository to extend your troubleshooting capabilities.
+This ecosystem is deeply integrated with official Elastic resources to ensure accuracy and up-to-date troubleshooting. All agents follow a **Primary Source Protocol** that prioritizes:
 
-*   **Repository**: `https://github.com/elastic/agent-skills`
-*   **Usage**: Refer to the official repository for deep querying (ES|QL), cloud setup, and advanced security alert triage.
+*   **Documentation**: `https://www.elastic.co/docs`
+*   **API Reference**: `https://www.elastic.co/docs/api/`
+*   **GitHub Repositories**: `https://github.com/elastic`
+*   **Agent Skills**: `https://github.com/elastic/agent-skills`
+
+Agents are equipped with `web_fetch` and `google_web_search` to verify configuration syntax, API parameters, and version-specific behavior directly against these sources.
+
+## 🧠 Continuous Learning & Self-Improvement
+
+This ecosystem is designed to evolve. All skills and subagents are equipped with a **Continuous Learning Mandate** and the tools necessary (`save_memory`, `replace`, `write_file`) to edit their own source files.
+
+When the AI successfully resolves a novel issue, writes a new ES|QL query, or discovers a repeatable workflow, it will proactively:
+1.  **Update Rulebooks**: Append new heuristics into the `SKILL.md` or `references/` files.
+2.  **Save Memory**: Retain user or environment-specific quirks across sessions.
+3.  **Automate**: Write new bash scripts into the `scripts/` directory for future use.
 
 ---
 
