@@ -70,7 +70,12 @@ The `setup.sh` script installs agents, skills, and utility scripts globally into
     4. Ask: *"Analyze these logs and tell me why the cluster is red."*
     5. The CLI will automatically use the `elastic-expert` skill and specialized subagents to triage the files.
 
-### 2. Cursor IDE (Global Helper Command)
+### 2. Claude CLI (Native Support)
+The `setup.sh` script also installs the ecosystem globally into `~/.claude/` for Claude CLI (`claude-code`) users.
+
+*   **Usage**: Run `claude` in any directory. The skills and agents are available for the model to reference and use during your session.
+
+### 3. Cursor IDE (Global Helper Command)
 Cursor requires `.mdc` rules to be in the local workspace. `setup.sh` installs a global helper command so you can instantly enable these rules in *any* project folder.
 
 *   **Usage**: Navigate to your troubleshooting directory and run:

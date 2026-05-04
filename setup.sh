@@ -44,10 +44,19 @@ cp -r skills/* ~/.gemini/skills/ 2>/dev/null || true
 cp scripts/*.sh ~/.gemini/scripts/ 2>/dev/null || true
 echo "   ✅ Gemini CLI environment updated."
 
+# 4. Setup Claude CLI (Global)
+echo "☁️  Setting up Claude CLI..."
+mkdir -p ~/.claude/agents ~/.claude/skills ~/.claude/scripts
+cp agents/*.md ~/.claude/agents/ 2>/dev/null || true
+cp -r skills/* ~/.claude/skills/ 2>/dev/null || true
+cp scripts/*.sh ~/.claude/scripts/ 2>/dev/null || true
+echo "   ✅ Claude CLI environment updated."
+
 echo ""
 echo "🎉 Setup Complete!"
 echo "👉 Cursor IDE users: Run 'elastic-cursor-init' in any project folder to enable @ rules."
 echo "   (Make sure ~/.local/bin is in your system's PATH)"
 echo "👉 Gemini CLI users: Agents and skills are installed globally."
+echo "👉 Claude CLI users: Agents and skills are installed globally in ~/.claude."
 echo "👉 Web LLM users: Check out BOOTSTRAP.md for Claude/ChatGPT setup."
 echo "👉 Official Skills: Extend this ecosystem with https://github.com/elastic/agent-skills"
