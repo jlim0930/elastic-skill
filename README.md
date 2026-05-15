@@ -1,116 +1,190 @@
 # Elastic Stack AI Troubleshooting Ecosystem
 
-This repository contains a specialized ecosystem of AI Agent Skills, Subagents, and Utility Scripts designed to troubleshoot, analyze, and optimize the Elastic Stack across all deployment models.
+A specialized set of AI agent skills, subagents, and utility scripts for diagnosing and remediating issues across the Elastic Stack — on self-managed infrastructure, Elastic Cloud Hosted (ECH), Elastic Cloud Enterprise (ECE), or Elastic Cloud on Kubernetes (ECK).
 
-It is structured to act as a **Strategic Orchestrator**, breaking down complex observability, performance, and infrastructure issues into delegable tasks for specialized AI personas.
-
-## 🤝 Official Elastic Resources
-
-This ecosystem is deeply integrated with official Elastic resources to ensure accuracy and up-to-date troubleshooting. All agents follow a **Primary Source Protocol** that prioritizes:
-
-*   **Documentation**: `https://www.elastic.co/docs`
-*   **API Reference**: `https://www.elastic.co/docs/api/`
-*   **GitHub Repositories**: `https://github.com/elastic`
-*   **Agent Skills**: `https://github.com/elastic/agent-skills`
-
-Agents are equipped with `web_fetch` and `google_web_search` to verify configuration syntax, API parameters, and version-specific behavior directly against these sources.
-
-## 🧠 Continuous Learning & Self-Improvement
-
-This ecosystem is designed to evolve. All skills and subagents are equipped with a **Continuous Learning Mandate** and the tools necessary (`save_memory`, `replace`, `write_file`) to edit their own source files.
-
-When the AI successfully resolves a novel issue, writes a new ES|QL query, or discovers a repeatable workflow, it will proactively:
-1.  **Update Rulebooks**: Append new heuristics into the `SKILL.md` or `references/` files.
-2.  **Save Memory**: Retain user or environment-specific quirks across sessions.
-3.  **Automate**: Write new bash scripts into the `scripts/` directory for future use.
+Designed for three goals: **fast diagnosis**, **accurate diagnosis**, and **low token usage**.
 
 ---
 
-## 🚀 Quick Start (Automated Setup)
+## How It Works
 
-We provide a universal setup script that automatically configures your environment and makes all utility scripts executable.
+The system uses a three-layer routing architecture. No reference files are loaded until a route is confirmed.
+
+### Layer 1 — Platform Detection
+`elastic-expert` is the entry point. It scans the input for platform signals first and activates the appropriate platform skill before any domain analysis begins.
+
+| Signal | Skill Activated |
+|---|---|
+| `ECE / allocator / ZooKeeper / FRC / route-server` | `ece-expert` |
+| `ECK / Kubernetes / kubectl / pod / operator / CRD` | `eck-expert` |
+| `Elastic Cloud / ECH / deployment plan / autoscaling` | `ech-expert` |
+| No platform signal | `elastic-expert` handles directly |
+
+### Layer 2 — Domain Routing (Phase 0)
+Each platform skill scans for domain keywords before loading anything. A single match routes directly to the right specialist with only one reference file loaded alongside it.
+
+| Domain Signal | Specialist Called |
+|---|---|
+| `certificate / TLS / SSL / keystore` | @elastic-certificate-specialist |
+| `ILM / rollover / tier / lifecycle / data stream` | @elastic-ilm-specialist |
+| `snapshot / SLM / backup / restore` | @elastic-snapshot-specialist |
+| `APM / trace / span / sourcemap` | @elastic-apm-specialist |
+| `Fleet / enrollment / Fleet Server / agent policy` | @elastic-fleet-specialist |
+| `ML / anomaly / ELSER / trained model` | @elastic-ml-specialist |
+| `Kibana / dashboard / visualization` | @elastic-kibana-specialist |
+| `upgrade / deprecation / Upgrade Assistant` | @elastic-upgrade-specialist |
+| `CCS / CCR / cross-cluster / remote cluster` | @elastic-ccs-ccr-specialist |
+| `ingest pipeline / grok / Logstash / Painless` | @elastic-ingest-specialist |
+| `transform / pivot / rollup` | @elastic-transform-specialist |
+| `RBAC / SAML / OIDC / API key / 401 / 403` | @elastic-security-specialist |
+| `GC / heap / slow search / indexing latency` | @elastic-performance-tuner |
+| `diagnostic bundle / nodes_stats / cluster_state` | @elastic-diagnostics-specialist |
+| `elasticsearch.log / kibana.log / gc.log / log file` | @elastic-log-analyzer |
+| `deployment plan / autoscaling / console signal` | @elastic-cloud-specialist |
+| `App Search / Workplace Search / Crawler` | @elastic-enterprise-search-specialist |
+
+**1 match** → specialist called directly, one reference file loaded.
+**2+ matches or no match** → full platform-specific triage (7–9 phases).
+
+### Layer 3 — Specialist Agents
+Each of the 17 specialists loads only `skills/shared/base.md` (universal thresholds, redaction rules, research guidance) plus one domain reference file. No orchestrator overhead.
+
+---
+
+## Platform Skills
+
+| Skill | Platform | Triage Coverage |
+|---|---|---|
+| `elastic-expert` | Self-managed / all platforms (orchestrator) | 8-phase triage + output |
+| `ece-expert` | Elastic Cloud Enterprise | 9 phases including container runtime, OS, ZooKeeper |
+| `eck-expert` | Elastic Cloud on Kubernetes | 7 phases including K8s/operator layer |
+| `ech-expert` | Elastic Cloud Hosted | 6-step inline triage + autoscaling checks |
+
+Platform skills with internal routing (ECE/ECK): ECE-specific signals (ZooKeeper, proxy, Docker, Podman, OS) and ECK-specific signals (operator, CNI, Ingress, pod scheduling) are handled internally without calling a specialist — these are platform-layer issues with no cross-platform equivalent.
+
+---
+
+## Shared Reference Library
+
+All specialists reference files from `skills/shared/` — a single canonical copy instead of per-skill duplicates:
+
+| File | Loaded By |
+|---|---|
+| `base.md` | All 17 specialist agents on start |
+| `advanced-features.md` | Certificate, APM, ML, Security specialists |
+| `data-management.md` | ILM, Snapshot, CCS/CCR, Transform specialists |
+| `ingest-pipelines.md` | Fleet, Ingest specialists |
+| `commands.md` | Performance, Diagnostics specialists |
+
+---
+
+## Utility Scripts
+
+Run via `run_shell_command` to extract signals from large diagnostic files without loading them fully into context:
+
+| Script | Input | Purpose |
+|---|---|---|
+| `triage_summary.sh` | Diagnostic directory | High-level cluster overview |
+| `triage_json.sh` | JSON file | Health, disk, shards, ILM errors |
+| `triage_logs.sh` | Log file | Top exception distribution |
+| `triage_memory.sh` | nodes_stats.json | JVM heap pressure + circuit breakers |
+| `triage_circuit_breakers.sh` | nodes_stats.json | Breaker state and usage |
+| `triage_allocation.sh` | cat/shards JSON | Unassigned shard reasons |
+| `triage_sharding.sh` | cat/shards JSON | Shard size and distribution |
+| `triage_tasks.sh` | _tasks JSON | Longest-running tasks |
+| `triage_hot_threads.sh` | hot_threads text | Top CPU thread summary |
+| `triage_pipelines.sh` | nodes_stats.json | Ingest processor failures |
+| `triage_ilm.sh` | ILM status + policies JSON | ILM status and policy summary |
+
+---
+
+## Quick Start
 
 ```bash
-# Run the setup script from the project root
 ./setup.sh
 ```
 
----
+Installs agents and skills globally for Claude CLI, Gemini CLI, and Cursor IDE. Makes all utility scripts executable.
 
-## 🛠️ Requirements & CLI Installation
+### Claude CLI
 
-Most tools require **Node.js 18+**. Install via `brew install node` (macOS) or `sudo apt install nodejs` (WSL).
+```bash
+claude
+```
 
-### 1. Gemini CLI (`gemini`)
-*   **macOS (Homebrew)**: `brew install gemini-cli`
-*   **macOS/WSL (npm)**: `npm install -g @google/gemini-cli`
+Skills and agents are installed to `~/.claude/`. Ask any Elastic Stack question — `elastic-expert` routes to the right specialist automatically.
 
-### 2. Claude CLI (`claude`)
-*   **macOS/WSL (Native)**: `curl -fsSL https://claude.ai/install.sh | bash`
-*   **macOS/WSL (npm)**: `npm install -g @anthropic-ai/claude-code`
+### Gemini CLI
 
-### 3. Cursor CLI (`cursor`)
-*   **Editor Command**: 
-    *   **macOS**: Command Palette (`Cmd+Shift+P`) -> "Shell Command: Install 'cursor' command in PATH"
-    *   **WSL**: Run `cursor .` in your terminal to link your Windows installation.
-*   **AI Agent (`cursor-agent`)**: `curl https://cursor.com/install -fsS | bash`
+```bash
+gemini
+```
 
----
+Agents and skills installed to `~/.gemini/`. Same routing behavior as Claude CLI.
 
-## Supported LLM Environments
+### Cursor IDE
 
-### 1. Gemini CLI (Native Support)
-The `setup.sh` script installs agents, skills, and utility scripts globally into `~/.gemini/`. 
+Navigate to your troubleshooting directory and run:
 
-*   **Usage**: Start a session and explicitly call an agent or let the CLI route your request automatically.
-*   **Example Troubleshooting Flow**:
-    1. Create a directory for your case: `mkdir -p diagnostics/issue-123 && cd diagnostics/issue-123`
-    2. Copy relevant logs, JSON diagnostics, or screenshots into this folder.
-    3. Run `gemini` in this directory.
-    4. Ask: *"Analyze these logs and tell me why the cluster is red."*
-    5. The CLI will automatically use the `elastic-expert` skill and specialized subagents to triage the files.
+```bash
+elastic-cursor-init
+```
 
-### 2. Claude CLI (Native Support)
-The `setup.sh` script also installs the ecosystem globally into `~/.claude/` for Claude CLI (`claude-code`) users.
+This symlinks all agent rules to `.cursor/rules/`. Use `@elastic-log-analyzer`, `@elastic-performance-tuner`, etc. in Cursor Chat to invoke specialists directly.
 
-*   **Usage**: Run `claude` in any directory. The skills and agents are available for the model to reference and use during your session.
+> Run `elastic-cursor-init` from the `elastic-skill` project directory for full path resolution of reference files.
 
-### 3. Cursor IDE (Global Helper Command)
-Cursor requires `.mdc` rules to be in the local workspace. `setup.sh` installs a global helper command so you can instantly enable these rules in *any* project folder.
+### Web LLM (Claude.ai / ChatGPT)
 
-*   **Usage**: Navigate to your troubleshooting directory and run:
-    ```bash
-    elastic-cursor-init
-    ```
-*   **Result**: This creates a `.cursor/rules` folder and symlinks the personas. Use `@` mentions like `@elastic-log-analyzer` in Cursor Chat to trigger specialized analysis on your local files.
-
-### 3. Web LLMs (ChatGPT / Claude.ai)
-Open the `BOOTSTRAP.md` file and follow instructions to upload reference files into your Custom GPT or Claude Project.
+See `BOOTSTRAP.md` — upload all files from `skills/shared/` and `skills/elastic-expert/references/` as knowledge base documents, then paste the master system prompt.
 
 ---
 
 ## Repository Structure
 
-```text
-.
-├── setup.sh            # Auto-installer for Cursor & Gemini CLI
-├── skills/             # Deep contextual rulebooks for specific platforms
-├── agents/             # Specialized subagent definitions (.md files)
-└── scripts/            # Bash scripts for fast parsing of diagnostic JSONs/logs
+```
+elastic-skill/
+├── setup.sh                           # Universal installer
+├── BOOTSTRAP.md                       # Web LLM setup (Claude.ai / ChatGPT)
+├── agents/                            # 17 specialist agent definitions
+│   ├── elastic-certificate-specialist.md
+│   ├── elastic-ilm-specialist.md
+│   ├── elastic-snapshot-specialist.md
+│   ├── elastic-apm-specialist.md
+│   ├── elastic-fleet-specialist.md
+│   ├── elastic-ml-specialist.md
+│   ├── elastic-kibana-specialist.md
+│   ├── elastic-upgrade-specialist.md
+│   ├── elastic-ccs-ccr-specialist.md
+│   ├── elastic-ingest-specialist.md
+│   ├── elastic-transform-specialist.md
+│   ├── elastic-security-specialist.md
+│   ├── elastic-performance-tuner.md
+│   ├── elastic-diagnostics-specialist.md
+│   ├── elastic-log-analyzer.md
+│   ├── elastic-cloud-specialist.md
+│   └── elastic-enterprise-search-specialist.md
+├── scripts/                           # 11 bash scripts for fast diagnostic parsing
+└── skills/
+    ├── shared/                        # Canonical reference files (no per-skill duplicates)
+    │   ├── base.md                    # Thresholds, redaction, research, efficiency rules
+    │   ├── advanced-features.md       # ML, APM, Security
+    │   ├── commands.md                # ES API, K8s, ECE, OS commands
+    │   ├── data-management.md         # ILM, Snapshots, CCS/CCR, Transforms
+    │   └── ingest-pipelines.md        # Ingest pipelines, Beats, OTel
+    ├── elastic-expert/                # Self-managed orchestrator + triage sequence
+    ├── ece-expert/                    # ECE platform skill
+    ├── eck-expert/                    # ECK/Kubernetes platform skill
+    └── ech-expert/                    # Elastic Cloud Hosted skill
 ```
 
-## Included Utility Scripts
+---
 
-The `scripts/` directory contains bash scripts designed for LLMs to run via shell execution to save tokens when analyzing massive log files or JSON diagnostic bundles.
+## Official Resources
 
-*   **`triage_json.sh`**: Rapidly extracts node stats, heap usage, and cluster health from heavy JSON responses.
-*   **`triage_logs.sh`**: Summarizes the top 10 most frequent exceptions in an Elasticsearch or Kibana log file.
-*   **`triage_allocation.sh`**: Quickly identifies why shards are unassigned from `_cat/shards` or `_cluster/allocation/explain` outputs.
-*   **`triage_tasks.sh`**: Parses `_tasks?detailed=true` JSON to find the longest-running tasks and summarize task counts by action.
-*   **`triage_hot_threads.sh`**: Condenses verbose `_nodes/hot_threads` output to show only thread names, CPU percentages, and the top-level blocking Java methods.
-*   **`triage_memory.sh`**: Analyzes `_nodes/stats` to instantly surface nodes with high JVM heap pressure (>75%), GC issues, and tripped circuit breakers.
-*   **`triage_circuit_breakers.sh`**: Deep dive into circuit breaker states, identifying both tripped breakers and those nearing their limits.
-*   **`triage_sharding.sh`**: Analyzes shard sizes and distribution to identify oversized shards (>50GB) and shard count imbalances.
-*   **`triage_pipelines.sh`**: Identifies failing ingest processors by aggregating error counts across all nodes.
-*   **`triage_ilm.sh`**: Summarizes the status and configuration of Index Lifecycle Management (ILM) policies.
-*   **`triage_summary.sh`**: Provides a high-level "at a glance" cluster health overview from various diagnostic files.
+All agents follow a Primary Source Protocol — web search and fetch tools are used to verify against:
+
+- **Documentation**: https://www.elastic.co/docs
+- **API Reference**: https://www.elastic.co/docs/api/
+- **Source & Issues**: https://github.com/elastic
+- **Agent Skills**: https://github.com/elastic/agent-skills
