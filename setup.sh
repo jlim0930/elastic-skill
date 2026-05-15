@@ -11,6 +11,7 @@ echo "  ${SCRIPT_COUNT} scripts ready."
 
 # 2. Setup Cursor IDE Rules (Global Helper)
 echo "  Setting up Cursor IDE global helper..."
+rm -f "$HOME/.elastic-ai-rules/"*.mdc 2>/dev/null || true
 mkdir -p "$HOME/.elastic-ai-rules"
 AGENT_COUNT=0
 for f in agents/*.md; do
@@ -40,20 +41,41 @@ chmod +x "$INIT_SCRIPT"
 echo "  ${AGENT_COUNT} agent rules installed to ~/.elastic-ai-rules/"
 echo "  'elastic-cursor-init' command created in ~/.local/bin"
 
+# Helper: remove previously-installed agent .md files and skill subdirs before copying
+_clean_and_install() {
+    local target_agents="$1"
+    local target_skills="$2"
+    local target_scripts="$3"
+
+    # Remove only the specific agent files we manage (preserves user-created agents)
+    for f in agents/*.md; do
+        [ -f "$f" ] && rm -f "${target_agents}/$(basename "$f")" 2>/dev/null || true
+    done
+
+    # Remove the skill subdirs we own, then recreate them
+    for d in skills/*/; do
+        [ -d "$d" ] && rm -rf "${target_skills}/$(basename "$d")" 2>/dev/null || true
+    done
+
+    # Remove only the specific script files we manage
+    for f in scripts/*.sh; do
+        [ -f "$f" ] && rm -f "${target_scripts}/$(basename "$f")" 2>/dev/null || true
+    done
+
+    mkdir -p "$target_agents" "$target_skills" "$target_scripts"
+    cp agents/*.md "$target_agents/" 2>/dev/null || true
+    cp -r skills/* "$target_skills/" 2>/dev/null || true
+    cp scripts/*.sh "$target_scripts/" 2>/dev/null || true
+}
+
 # 3. Setup Gemini CLI (Global)
 echo "  Setting up Gemini CLI..."
-mkdir -p ~/.gemini/agents ~/.gemini/skills ~/.gemini/scripts
-cp agents/*.md ~/.gemini/agents/ 2>/dev/null || true
-cp -r skills/* ~/.gemini/skills/ 2>/dev/null || true
-cp scripts/*.sh ~/.gemini/scripts/ 2>/dev/null || true
+_clean_and_install ~/.gemini/agents ~/.gemini/skills ~/.gemini/scripts
 echo "  Gemini CLI: agents, skills (including shared/), and scripts installed to ~/.gemini/"
 
 # 4. Setup Claude CLI (Global)
 echo "  Setting up Claude CLI..."
-mkdir -p ~/.claude/agents ~/.claude/skills ~/.claude/scripts
-cp agents/*.md ~/.claude/agents/ 2>/dev/null || true
-cp -r skills/* ~/.claude/skills/ 2>/dev/null || true
-cp scripts/*.sh ~/.claude/scripts/ 2>/dev/null || true
+_clean_and_install ~/.claude/agents ~/.claude/skills ~/.claude/scripts
 echo "  Claude CLI: agents, skills (including shared/), and scripts installed to ~/.claude/"
 
 echo ""
