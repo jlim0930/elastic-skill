@@ -1,1 +1,4 @@
-.cursor/
+.claude/
+refresh-kcs-token.sh
+start-kcs-mcp.sh
+.mcp.json
