@@ -28,13 +28,13 @@ Top-Level Skill (domain router)
 
 ### Agents and Sub-Agents
 
-| Top-Level Skill | Sub-Agents |
+| Top-Level Skill | Sub-Agent Groups |
 |---|---|
-| `elasticsearch-stack` | cluster-health, shard-allocation, ilm-data-streams, mapping-conflicts, memory-pressure, ingest-performance |
-| `ech` | deployment-plan, autoscaling, cluster-health, cloud-console |
-| `ece` | zookeeper-health, proxy-routing, allocator-pressure, container-runtime, cluster-health |
-| `eck` | operator-reconciliation, pod-scheduling, cluster-health, networking |
-| `elastic-agent` | enrollment, fleet-policy, agent-health, standalone |
+| `elasticsearch-stack` | `es/` (16) · `kibana/` (13) · `logstash/` (12) · `cross-product/` (6) |
+| `ech` | `availability/` (3) · `connectivity/` (3) · `diagnostics/` (2) · `operations/` (3) · `security/` (3) |
+| `ece` | `diagnostics/` (2) · `infrastructure/` (4) · `lifecycle/` (3) · `operations/` (4) · `platform-availability/` (5) · `security/` (2) |
+| `eck` | cluster-health · networking · operator-reconciliation · pod-scheduling |
+| `elastic-agent` | `agent/` (10) · `apm/` (10) · `beats/` (10) · `fleet-server/` (8) · `cross/` (8) |
 
 ---
 
@@ -82,7 +82,7 @@ The setup script:
 2. Captures your KCS auth token (opens a browser for Okta login)
 3. Installs skills and agents for Claude Code CLI, Gemini CLI, and Cursor
 4. Writes MCP server configuration for each tool
-5. Creates `start-kcs-mcp.sh` and `refresh-kcs-token.sh` helper scripts
+5. Creates `start-kcs-mcp.sh`, `stop-kcs-mcp.sh`, and `refresh-kcs-token.sh` helper scripts
 
 Before every session, start the KCS MCP server:
 
@@ -326,9 +326,7 @@ The token is not saved to disk — the server must be restarted this way every t
 curl -s http://127.0.0.1:8001/mcp | head -3
 
 # Stop
-pkill -f "KCS_search.py"
-# or:
-kill $(cat /tmp/kcs-mcp.pid)
+./stop-kcs-mcp.sh
 
 # View logs
 tail -f /tmp/kcs-mcp.log
@@ -414,6 +412,7 @@ Sub-agents are instructed to:
 elastic-skill/
 ├── setup.sh                        # Universal installer (run this first)
 ├── start-kcs-mcp.sh                # Start KCS MCP server (created by setup.sh)
+├── stop-kcs-mcp.sh                 # Stop KCS MCP server (created by setup.sh)
 ├── refresh-kcs-token.sh            # Refresh expired KCS token (created by setup.sh)
 ├── .mcp.json                       # Project-level MCP config for Claude Code CLI
 │
@@ -421,51 +420,189 @@ elastic-skill/
 │   ├── retrieval-protocol.md       # KCS→Docs→Web chain + token refresh logic
 │   ├── output-format.md            # Unified response format with confidence scores
 │   ├── thresholds.md               # Critical thresholds (heap, disk, shards, etc.)
-│   └── triage-phases.md            # 8-phase fallback triage sequence
+│   ├── triage-phases.md            # Fallback triage sequence
+│   ├── log_filtering.md
+│   ├── config_filtering.md
+│   ├── error_pattern_matching.md
+│   ├── authentication_checks.md
+│   ├── network_connectivity_checks.md
+│   ├── tls_certificate_checks.md
+│   ├── performance_triage.md
+│   ├── snapshot_triage.md
+│   ├── version_compatibility_checks.md
+│   └── question_clarification.md
 │
 └── skills/
     ├── elasticsearch-stack/
-    │   ├── SKILL.md                # Router: routes to sub-agents by signal
+    │   ├── SKILL.md
     │   └── sub-agents/
-    │       ├── cluster-health.md
-    │       ├── shard-allocation.md
-    │       ├── ilm-data-streams.md
-    │       ├── mapping-conflicts.md
-    │       ├── memory-pressure.md
-    │       └── ingest-performance.md
+    │       ├── es/                             # 16 sub-agents
+    │       │   ├── cluster-health.md
+    │       │   ├── shard-distribution.md
+    │       │   ├── jvm-memory-gc.md
+    │       │   ├── disk-storage-watermark.md
+    │       │   ├── indexing-performance.md
+    │       │   ├── search-performance.md
+    │       │   ├── ingest-pipeline.md
+    │       │   ├── ilm.md
+    │       │   ├── mapping-schema.md
+    │       │   ├── snapshot-restore.md
+    │       │   ├── security-access.md
+    │       │   ├── tls-certificates.md
+    │       │   ├── network-transport.md
+    │       │   ├── cpu-threadpool-os.md
+    │       │   ├── observability-data.md
+    │       │   └── machine-learning.md
+    │       ├── kibana/                         # 13 sub-agents
+    │       │   ├── startup-availability.md
+    │       │   ├── login-authentication.md
+    │       │   ├── dashboard-visualization.md
+    │       │   ├── discover-query.md
+    │       │   ├── saved-objects-migration.md
+    │       │   ├── alerting-rules.md
+    │       │   ├── reporting.md
+    │       │   ├── performance.md
+    │       │   ├── authorization-spaces.md
+    │       │   ├── machine-learning-ui.md
+    │       │   ├── observability-security-solution.md
+    │       │   ├── network-proxy.md
+    │       │   └── tls-certificates.md
+    │       ├── logstash/                       # 12 sub-agents
+    │       │   ├── pipeline-startup-config.md
+    │       │   ├── input-connectivity.md
+    │       │   ├── filter-parsing.md
+    │       │   ├── elasticsearch-output.md
+    │       │   ├── queueing-backpressure.md
+    │       │   ├── pipeline-throughput-performance.md
+    │       │   ├── event-loss-delivery.md
+    │       │   ├── plugin-compatibility.md
+    │       │   ├── monitoring-observability.md
+    │       │   ├── processor-enrichment.md
+    │       │   ├── os-jvm.md
+    │       │   └── tls-certificates.md
+    │       └── cross-product/                  # 6 sub-agents
+    │           ├── certificate-tls.md
+    │           ├── network.md
+    │           ├── os-platform.md
+    │           ├── performance-triage.md
+    │           ├── ingestion-architecture.md
+    │           └── upgrade-compatibility.md
     │
     ├── ech/
     │   ├── SKILL.md
     │   └── sub-agents/
-    │       ├── deployment-plan.md
-    │       ├── autoscaling.md
-    │       ├── cluster-health.md
-    │       └── cloud-console.md
+    │       ├── availability/                   # 3 sub-agents
+    │       │   ├── deployment-health.md
+    │       │   ├── plan-change.md
+    │       │   └── routing-proxy.md
+    │       ├── connectivity/                   # 3 sub-agents
+    │       │   ├── network-access.md
+    │       │   ├── private-connectivity.md
+    │       │   └── tls-certificates.md
+    │       ├── diagnostics/                    # 2 sub-agents
+    │       │   ├── known-issues-restrictions.md
+    │       │   └── monitoring-logs.md
+    │       ├── operations/                     # 3 sub-agents
+    │       │   ├── performance-capacity.md
+    │       │   ├── secure-settings-plugins.md
+    │       │   └── snapshot-restore.md
+    │       └── security/                       # 3 sub-agents
+    │           ├── access-controls.md
+    │           ├── authentication-authorization.md
+    │           └── network-security.md
     │
     ├── ece/
     │   ├── SKILL.md
     │   └── sub-agents/
-    │       ├── zookeeper-health.md
-    │       ├── proxy-routing.md
-    │       ├── allocator-pressure.md
-    │       ├── container-runtime.md
-    │       └── cluster-health.md
+    │       ├── diagnostics/                    # 2 sub-agents
+    │       │   ├── known-issues-restrictions.md
+    │       │   └── logging-monitoring-diagnostics.md
+    │       ├── infrastructure/                 # 4 sub-agents
+    │       │   ├── endpoint-url-dns.md
+    │       │   ├── host-os-container-runtime.md
+    │       │   ├── network.md
+    │       │   └── tls-certificates.md
+    │       ├── lifecycle/                      # 3 sub-agents
+    │       │   ├── installation-bootstrap.md
+    │       │   ├── licensing.md
+    │       │   └── upgrade.md
+    │       ├── operations/                     # 4 sub-agents
+    │       │   ├── allocators.md
+    │       │   ├── performance-capacity.md
+    │       │   ├── plan-change-constructor.md
+    │       │   └── snapshot-repository.md
+    │       ├── platform-availability/          # 5 sub-agents
+    │       │   ├── coordinator-admin-console.md
+    │       │   ├── director-zookeeper.md
+    │       │   ├── platform-health.md
+    │       │   ├── proxy-routing.md
+    │       │   └── system-deployments.md
+    │       └── security/                       # 2 sub-agents
+    │           ├── authentication-authorization.md
+    │           └── security-cluster.md
     │
     ├── eck/
     │   ├── SKILL.md
     │   └── sub-agents/
-    │       ├── operator-reconciliation.md
-    │       ├── pod-scheduling.md
     │       ├── cluster-health.md
-    │       └── networking.md
+    │       ├── networking.md
+    │       ├── operator-reconciliation.md
+    │       └── pod-scheduling.md
     │
     └── elastic-agent/
         ├── SKILL.md
         └── sub-agents/
-            ├── enrollment.md
-            ├── fleet-policy.md
-            ├── agent-health.md
-            └── standalone.md
+            ├── agent/                          # 10 sub-agents
+            │   ├── data-collection.md
+            │   ├── diagnostics.md
+            │   ├── enrollment-installation.md
+            │   ├── health-checkin.md
+            │   ├── network.md
+            │   ├── performance.md
+            │   ├── policy-configuration.md
+            │   ├── security-auth.md
+            │   ├── tls-certificates.md
+            │   └── upgrade-lifecycle.md
+            ├── apm/                            # 10 sub-agents
+            │   ├── agent-connectivity.md
+            │   ├── applications-ui-data-quality.md
+            │   ├── data-ingestion.md
+            │   ├── fleet-managed-apm.md
+            │   ├── indexing-schema.md
+            │   ├── processing-performance.md
+            │   ├── security-auth.md
+            │   ├── timeout-network.md
+            │   ├── tls-ssl.md
+            │   └── upgrade-compatibility.md
+            ├── beats/                          # 10 sub-agents
+            │   ├── inputs-harvesting.md
+            │   ├── modules-integrations.md
+            │   ├── network.md
+            │   ├── outputs-delivery.md
+            │   ├── parsing-processing.md
+            │   ├── performance.md
+            │   ├── registry-state.md
+            │   ├── startup-config.md
+            │   ├── tls-certificates.md
+            │   └── upgrade-compatibility.md
+            ├── fleet-server/                   # 8 sub-agents
+            │   ├── agent-checkin.md
+            │   ├── bootstrap.md
+            │   ├── host-configuration.md
+            │   ├── network-proxy.md
+            │   ├── scalability-performance.md
+            │   ├── security-auth.md
+            │   ├── tls-certificates.md
+            │   └── upgrade-compatibility.md
+            └── cross/                          # 8 sub-agents
+                ├── certificates-tls.md
+                ├── data-collection-no-data.md
+                ├── enrollment-bootstrap.md
+                ├── network-proxy.md
+                ├── performance-scale.md
+                ├── policy-config-distribution.md
+                ├── security-auth.md
+                └── upgrade-lifecycle.md
 ```
 
 ---

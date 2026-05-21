@@ -419,9 +419,10 @@ install_skills() {
         domain_name=$(basename "${domain}")
         rm -f "${TARGET_AGENTS}/${domain_name}.md" 2>/dev/null || true
         if [ -d "${domain}/sub-agents" ]; then
-            for sub in "${domain}/sub-agents/"*.md; do
-                [ -f "${sub}" ] && rm -f "${TARGET_AGENTS}/${domain_name}-$(basename "${sub}")" 2>/dev/null || true
-            done
+            while IFS= read -r sub; do
+                rel="${sub#${domain}/sub-agents/}"
+                rm -f "${TARGET_AGENTS}/${domain_name}-${rel//\//-}" 2>/dev/null || true
+            done < <(find "${domain}/sub-agents" -name "*.md" -type f 2>/dev/null)
         fi
         rm -rf "${TARGET_SKILLS:?}/${domain_name}" 2>/dev/null || true
     done
@@ -439,13 +440,12 @@ install_skills() {
         fi
 
         if [ -d "${domain}/sub-agents" ]; then
-            for sub in "${domain}/sub-agents/"*.md; do
-                if [ -f "${sub}" ]; then
-                    dest="${domain_name}-$(basename "${sub}")"
-                    cp "${sub}" "${TARGET_AGENTS}/${dest}"
-                    echo "${dest}" >> "${MANIFEST}"
-                fi
-            done
+            while IFS= read -r sub; do
+                rel="${sub#${domain}/sub-agents/}"
+                dest="${domain_name}-${rel//\//-}"
+                cp "${sub}" "${TARGET_AGENTS}/${dest}"
+                echo "${dest}" >> "${MANIFEST}"
+            done < <(find "${domain}/sub-agents" -name "*.md" -type f | sort)
         fi
 
         cp -r "${domain}" "${TARGET_SKILLS}/${domain_name}/"
@@ -467,6 +467,11 @@ CLAUDE_SETTINGS="${HOME}/.claude/settings.json"
 
 install_skills "${CLAUDE_AGENTS_DIR}" "${CLAUDE_SKILLS_DIR}"
 ok "Skills and agents installed to ~/.claude/"
+
+# Symlink ~/.claude/shared → ~/.claude/skills/shared so that relative paths
+# like ../../shared/... in SKILL.md files resolve correctly from the skills tree.
+[ -L "${HOME}/.claude/shared" ] && rm -f "${HOME}/.claude/shared"
+[ ! -e "${HOME}/.claude/shared" ] && ln -s "${CLAUDE_SKILLS_DIR}/shared" "${HOME}/.claude/shared" 2>/dev/null || true
 
 # Write project-level .mcp.json (used when running claude from this directory)
 cat > "${SCRIPT_DIR}/.mcp.json" << MCPEOF
@@ -529,6 +534,10 @@ GEMINI_SETTINGS="${HOME}/.gemini/settings.json"
 install_skills "${GEMINI_AGENTS}" "${GEMINI_SKILLS}"
 ok "Skills and agents installed to ~/.gemini/"
 
+# Symlink ~/.gemini/shared → ~/.gemini/skills/shared for the same reason.
+[ -L "${HOME}/.gemini/shared" ] && rm -f "${HOME}/.gemini/shared"
+[ ! -e "${HOME}/.gemini/shared" ] && ln -s "${GEMINI_SKILLS}/shared" "${HOME}/.gemini/shared" 2>/dev/null || true
+
 if [ "${HAS_NPX}" = "1" ]; then
     # Gemini settings.json needs the mcpServers merged in
     if [ ! -f "${GEMINI_SETTINGS}" ]; then
@@ -568,14 +577,12 @@ for domain in "${SCRIPT_DIR}/skills"/*/; do
         AGENT_COUNT=$((AGENT_COUNT + 1))
     fi
     if [ -d "${domain}/sub-agents" ]; then
-        for sub in "${domain}/sub-agents/"*.md; do
-            if [ -f "${sub}" ]; then
-                # Prefix with domain name to avoid collisions (e.g. ece-cluster-health.mdc)
-                dest="${domain_name}-$(basename "${sub}" .md).mdc"
-                cp "${sub}" "${CURSOR_RULES_GLOBAL}/${dest}"
-                AGENT_COUNT=$((AGENT_COUNT + 1))
-            fi
-        done
+        while IFS= read -r sub; do
+            rel="${sub#${domain}/sub-agents/}"
+            dest="${domain_name}-${rel//\//-}"
+            cp "${sub}" "${CURSOR_RULES_GLOBAL}/${dest%.md}.mdc"
+            AGENT_COUNT=$((AGENT_COUNT + 1))
+        done < <(find "${domain}/sub-agents" -name "*.md" -type f | sort)
     fi
 done
 
