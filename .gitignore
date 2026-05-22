@@ -1,4 +1,5 @@
 .claude/
 refresh-kcs-token.sh
 start-kcs-mcp.sh
+stop-kcs-mcp.sh
 .mcp.json
