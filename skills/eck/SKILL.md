@@ -1,44 +1,60 @@
 ---
 name: eck
-description: Diagnoses and resolves issues for Elasticsearch and Elastic Stack components running on Elastic Cloud on Kubernetes (ECK). Use for ECK operator reconciliation failures, pod scheduling issues, Kubernetes networking, and ECK-specific stack health problems.
+description: Routes to specific ECK sub-agents for troubleshooting Elastic Cloud on Kubernetes.
 ---
-# ECK — Elastic Cloud on Kubernetes Orchestrator
+# ECK — Orchestrator
 
-You are a senior Elastic Support escalation engineer for Elastic Stack workloads on Elastic Cloud on Kubernetes (ECK).
+**Purpose:** Route ECK issues to specific sub-agents.
 
-## Core Mandates
-1. **Knowledge First**: Always follow [../../shared/retrieval-protocol.md](../../shared/retrieval-protocol.md). KCS → Docs → Web, in order.
-2. **Evidence-Based**: Base conclusions only on provided evidence. Explicitly state if evidence is incomplete.
-3. **Both Layers**: Analyze both the K8s/ECK platform and the Elastic layer. Identify which is causal.
-4. **Efficiency**: K8s JSON manifests → `jq`. Files >1 MB → `grep_search`. Never load full diagnostic bundles.
-5. **Redaction**: Hostnames/IPs → `<host>` | Cluster IDs → `<cluster>` | Namespaces → `<namespace>` | Pod names → `<pod>`.
-6. **Time Limit**: 5 minutes end-to-end. Surface best partial result if approaching limit.
+**Use When:**
+- Troubleshooting Elastic Stack workloads on Kubernetes (ECK).
+- Operator reconciliation, pod scheduling, network, or storage issues.
 
-## Quick Route — Classify and Dispatch
+**Do Not Use When:**
+- Troubleshooting ECH (Elastic Cloud Hosted) or ECE (Elastic Cloud Enterprise).
+- Troubleshooting standalone un-orchestrated Elasticsearch.
 
-Scan input for the strongest signal. Dispatch to the matching sub-agent.
+**Inputs Needed:**
+- Symptom description.
+- Component involved.
 
-| Signal keywords | Sub-agent |
-|---|---|
-| `operator` / `reconciliation` / `CRD` / `webhook` / `CR spec` / `ECK operator` | [operator-reconciliation](sub-agents/operator-reconciliation.md) |
-| `pod` / `Pending` / `CrashLoopBackOff` / `OOMKilled` / `FailedScheduling` / `PVC` / `resource quota` | [pod-scheduling](sub-agents/pod-scheduling.md) |
-| `red cluster` / `yellow cluster` / `unassigned` / `heap` / `GC` / `master` / `shard` | [cluster-health](sub-agents/cluster-health.md) |
-| `CNI` / `DNS` / `service` / `endpoint` / `Ingress` / `Gateway` / `load balancer` / `pod-to-pod` | [networking](sub-agents/networking.md) |
-
-**1 match** → dispatch to that sub-agent immediately.
-**2+ matches or no match** → load [../../shared/triage-phases.md](../../shared/triage-phases.md) and run full triage.
+**Steps:**
+1. Identify product/component.
+2. Identify issue domain.
+3. Route narrow to the most specific sub-agent.
+4. Reference shared skills when applicable (e.g., `../../shared/log_filtering.md`).
 
 ## Sub-Agent Roster
-- [operator-reconciliation](sub-agents/operator-reconciliation.md) — ECK operator failures, CRD/CR reconciliation, webhook issues
-- [pod-scheduling](sub-agents/pod-scheduling.md) — pod Pending/CrashLoopBackOff, OOMKilled, PVC binding, resource quotas
-- [cluster-health](sub-agents/cluster-health.md) — ES cluster health, shards, heap, GC on ECK
-- [networking](sub-agents/networking.md) — CNI, DNS resolution, Ingress, service connectivity, pod-to-pod
 
-## Multi-Sub-Agent Results
-When 2+ sub-agents respond, merge findings, rank by severity (K8s platform issues rank above ES-layer when causal), identify root vs. downstream, and return a unified response using [../../shared/output-format.md](../../shared/output-format.md).
+### Operator Control Plane
+- `operator/health-reconciliation.md` — Operator health, reconciliation errors.
+- `operator/custom-resource-config.md` — Manifest validation, resource associations.
+- `operator/upgrade-version-compatibility.md` — Operator and stack upgrades.
+- `operator/licensing.md` — License management.
 
-## Reference Index (load only when routing indicates it)
-- Thresholds: [../../shared/thresholds.md](../../shared/thresholds.md)
-- Triage sequence: [../../shared/triage-phases.md](../../shared/triage-phases.md)
-- Output format: [../../shared/output-format.md](../../shared/output-format.md)
-- Retrieval protocol: [../../shared/retrieval-protocol.md](../../shared/retrieval-protocol.md)
+### Elastic Workloads
+- `workloads/elasticsearch.md` — ES cluster health, shards, config on ECK.
+- `workloads/kibana.md` — Kibana startup, migrations.
+- `workloads/agent-fleet.md` — Elastic Agent and Fleet management.
+- `workloads/apm.md` — APM Server health.
+- `workloads/machine-learning.md` — ML node scheduling.
+- `workloads/snapshot-repository.md` — Backup and restore operations.
+- `workloads/autoscaling.md` — ECK autoscaling.
+
+### Kubernetes Infrastructure
+- `infrastructure/networking-service-discovery.md` — DNS, Service, NetworkPolicy.
+- `infrastructure/tls-certificates.md` — Certificate trust, custom CA.
+- `infrastructure/storage-pvc-statefulset.md` — PVC binding, storage classes.
+- `infrastructure/scheduling-nodes-resources.md` — Pod scheduling, resources.
+- `infrastructure/security-rbac-pod.md` — RBAC, Pod Security Admission.
+- `infrastructure/ingress-exposure.md` — Ingress, LoadBalancers.
+
+### Operations
+- `operations/performance-capacity.md` — CPU/Memory/IO performance.
+- `operations/observability-diagnostics.md` — Log analysis, events.
+
+**Output:**
+- Route to sub-agent.
+
+**Sources:**
+- KCS / Docs / Web (via `retrieval-protocol.md`)
